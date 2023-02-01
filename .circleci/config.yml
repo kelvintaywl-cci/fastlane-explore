@@ -1,0 +1,25 @@
+version: 2.1
+
+jobs:
+  mock-fastlane:
+   docker:
+     - image:
+   resource_class: medium
+   environment:
+     GITHUB_TOKEN: "ghp_mockvalueFooBAR"
+   steps:
+     - checkout
+     - run:
+         name: update env vars
+         command: |
+           basic_auth=$(echo -n "x-oauth-basic:${GITHUB_TOKEN}" | base64)
+           echo "export MATCH_GIT_BASIC_AUTHORIZATION=${basic_auth}" >> $BASH_ENV
+     - run:
+         name: debug
+         command: printenv MATCH_GIT_BASIC_AUTHORIZATION
+     - run: ruby env.rb
+ 
+ workflows:
+   mock:
+     jobs:
+       - mock-fastlane
